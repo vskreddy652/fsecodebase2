@@ -1,0 +1,3 @@
+Jenkins:
+dockerx pull jenkins/jenkins:lts
+dockerx run -p 7070:8080 --name=GiveAwayJenkins jenkins/jenkins:lts

@@ -1,0 +1,32 @@
+node {
+    stage('Git Login') {
+		git credentialsId: 'GitLabCreds', url: 'http://172.18.2.18/anshulgammy/683576-Hackathon-CrescentUIMaster.git'
+	}
+	stage('NPM Stage') {
+		def nodeHome = tool name: 'NODE_HOME', type: 'nodejs'
+		def nodeCommand = "${nodeHome}/npm"
+		bat "${nodeCommand} install"
+	}
+	stage ('NG Build Stage') {
+	    def nodeHome = tool name: 'NODE_HOME', type: 'nodejs'
+		def nodeCommand = "${nodeHome}/npm"
+		bat "${nodeCommand} run ng -- build --prod"
+	}
+	stage('Create Docker Image') {
+		bat "dockerx image build -t anshulgammy/giveaway-angularspa:1.0 ."
+	}
+	stage('Login to Docker') {
+		withCredentials([string(credentialsId: 'dockerHubPwdForAnshul', variable: 'dockerHubPwdForAnshul')]) {
+			bat "dockerx login -u anshulgammy -p ${dockerHubPwdForAnshul}"
+		}
+	}
+	stage('Push to Docker') {
+		bat "dockerx push anshulgammy/giveaway-angularspa:1.0"
+	}
+	stage('Stop running Container') {
+		bat "dockerx rm -f giveaway-angularspa-container"
+	}
+	stage('Deploy new Image') {
+		bat "dockerx run --rm --name giveaway-angularspa-container -d -p 7700:80 -v angularspa-datavolume:/volume/data/angularspa anshulgammy/giveaway-angularspa:1.0"
+	}
+}

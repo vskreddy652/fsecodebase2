@@ -1,0 +1,2 @@
+### For GiveAway MySQL DB.
+dockerx run  --name giveawaydb-container -it -p 6001:3306 -h 172.18.2.15 -v mysql-datavolume:/volume/data/mysql  -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=giveaway_db mysql:5.7

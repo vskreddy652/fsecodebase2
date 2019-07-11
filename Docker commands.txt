@@ -1,0 +1,44 @@
+### For GiveAway MySQL DB.
+dockerx run --name giveawaydb-container -d -p 6001:3306 -h 172.18.2.15 -v mysql-datavolume:/volume/data/mysql -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=giveaway_db mysql:5.7
+
+###For UserManagement Micro Service
+dockerx image build -t anshulgammy/giveaway-usermanagement:1.0 .
+dockerx run --rm --name giveaway-usermanagement-container -d -p 7701:7701 -v user-datavolume:/volume/data/user anshulgammy/giveaway-usermanagement:1.0
+
+###For InventoryManagement Micro Service
+dockerx image build -t anshulgammy/giveaway-inventorymanagement:1.0 .
+dockerx run --rm --name giveaway-inventorymanagement-container -d -p 7702:7702  -v inv-datavolume:/volume/data/inv anshulgammy/giveaway-inventorymanagement:1.0
+
+###For Angular SPA
+dockerx image build -t anshulgammy/giveaway-angularspa:1.0 .
+dockerx run --rm --name giveaway-angularspa-container -d -p 7700:80 -v angularspa-datavolume:/volume/data/angularspa anshulgammy/giveaway-angularspa:1.0
+
+
+###For Eureka Server
+dockerx image build -t anshulgammy/giveaway-eurekaserver-config:1.0 .
+dockerx run --rm --name giveaway-eureka-container -d -p 7707:7707 -v eureka-datavolume:/volume/data/eureka anshulgammy/giveaway-eurekaserver-config:1.0
+
+
+###For Zuul Proxy
+dockerx image build -t anshulgammy/giveaway-zuul-config:1.0 .
+dockerx run --rm --name giveaway-zuul-container -d -p 7706:7706 -v zuul-datavolume:/volume/data/zuul anshulgammy/giveaway-zuul-config:1.0
+
+
+###Reporting
+dockerx image build -t bhaskarkoley87/giveaway-reportingservice:1.0 .
+dockerx run --rm --name giveaway-reportingservice-container -d -p 7703:7703 -v reporting-datavolume:/volume/data/reporting bhaskarkoley87/giveaway-reportingservice:1.0
+
+http://172.18.1.195:8080/project/reportingmanagement
+
+###MailSystem
+http://172.18.1.195:8080/project/mailsystem
+dockerx image build -t bhaskarkoley87/giveaway-mailingservice:1.0 .
+dockerx run --rm --name giveaway-mailingsystem-container -d -p 7704:7704 -v mail-datavolume:/volume/data/mail bhaskarkoley87/giveaway-mailingservice:1.0
+
+
+###EventManagement
+http://172.18.1.195:8080/project/eventmanagement
+dockerx image build -t bhaskarkoley87/eventmanagementservice:1.0 .
+dockerx run --rm --name giveaway-eventmanagementservice-container -d -p 7705:7705 -v event-datavolume:/volume/data/event bhaskarkoley87/eventmanagementservice:1.0
+
+SonarQube secret token: 6ae8fa2968c2ca1f3fad97c1c8012e42579162f3

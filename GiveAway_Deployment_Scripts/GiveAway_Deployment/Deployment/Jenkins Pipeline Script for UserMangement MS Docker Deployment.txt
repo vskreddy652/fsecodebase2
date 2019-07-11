@@ -1,0 +1,22 @@
+node {
+	stage('SCM Checkout') {
+		git credentialsId: 'GitLabCreds', url: 'http://172.18.2.18/anshulgammy/683576-Hackathon-UserManagementMicroService.git'
+	}
+	/*stage('Login to Docker') {
+		withCredentials([string(credentialsId: 'dockerHubPwdForAnshul', variable: 'dockerHubPwdForAnshul')]) {
+			bat "dockerx login -u anshulgammy -p ${dockerHubPwdForAnshul}"
+		}
+	}*/
+	stage('Build') {
+		def mvnHome = tool name: 'MAVEN_HOME', type: 'maven'
+		def mvnCommand = "${mvnHome}/bin/mvn"
+		bat "${mvnCommand} clean install"
+		bat "${SONAR_RUNNER_VARIABLE}/bin/sonar-scanner"
+	}
+	stage('Stop running Container') {
+		bat "dockerx rm -f giveaway-usermanagement-container"
+	}
+	stage('Deploy new Image') {
+		bat "dockerx run --rm --name giveaway-usermanagement-container -d -p 7701:7701 -v user-datavolume:/volume/data/user anshulgammy/giveaway-usermanagement:1.0"
+	}
+}

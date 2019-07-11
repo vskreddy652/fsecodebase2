@@ -1,0 +1,3 @@
+GitLab Repository: http://172.18.2.18/bhaskarkoley/676225-Hackthon-GiveAwayReportingServices.git
+
+Docker: docker pull bhaskarkoley87/GiveAwayReportingService
